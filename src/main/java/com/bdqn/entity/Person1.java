@@ -5,4 +5,23 @@ package com.bdqn.entity;
  */
 public class Person1 {
     private String name,age;
+
+    public Person1() {
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getAge() {
+        return age;
+    }
+
+    public void setAge(String age) {
+        this.age = age;
+    }
 }
