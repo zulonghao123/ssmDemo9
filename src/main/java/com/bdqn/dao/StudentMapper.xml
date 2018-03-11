@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bdqn.dao.StudentMapper">
+
+    <resultMap id="stuMap" type="Student">
+        <id property="id" column="id"/>
+        <result property="studentName" column="student_name"/>
+        <result property="studentNum" column="student_num"/>
+        <result property="age" column="age"/>
+        <result property="gender" column="gender"/>
+        <association property="grade" javaType="Grade" resultMap="gradeMap"></association>
+    </resultMap>
+    <resultMap id="gradeMap" type="Grade">
+        <id property="id" column="g_id"/>
+        <result property="gradeName" column="grade_name"/>
+    </resultMap>
+    <select id="queryAll" resultMap="stuMap">
+        select s.*,g.id as g_id,g.grade_name from student s,grade g where g.id=s.grade_id
+    </select>
+
+    <delete id="deleteStudentListByIds" parameterType="list">
+        delete from student where id in
+        <foreach collection="list" open="(" separator="," close=")" item="id">
+            #{id}
+        </foreach>
+    </delete>
+
+    <insert id="addStudent" parameterType="Student">
+        insert into student values(null,#{grade.id},#{studentName},#{gender},#{age},#{studentNum})
+    </insert>
+    
+    <select id="queryStudentById" parameterType="integer" resultMap="stuMap">
+        select s.*,g.id as g_id,g.grade_name from student s,grade g where g.id=s.grade_id and s.id=#{stuId}
+    </select>
+
+    <update id="updateStudent" parameterType="Student">
+        update student set grade_id=#{grade.id},age=#{age},gender=#{gender},student_name=#{studentName} where id=#{id}
+    </update>
+    
+    <delete id="deleteStudentByGradeId" parameterType="integer">
+        delete from student where grade_id=#{gradeId}
+    </delete>
+
+    <select id="queryStudentListByGradeId" parameterType="integer" resultMap="stuMap">
+        select s.*,g.grade_name,g.id as g_id from student s,grade g where g.id=s.grade_id and s.grade_id=#{gradeId}
+    </select>
+</mapper>

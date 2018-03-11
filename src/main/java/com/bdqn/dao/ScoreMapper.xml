@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bdqn.dao.ScoreMapper">
+    <resultMap id="gradeMap" type="Grade">
+        <id property="id" column="g_id"/>
+        <result property="gradeName" column="grade_name"/>
+    </resultMap>
+
+    <resultMap id="courseMap" type="Course">
+        <id property="id" column="c_id"/>
+        <id property="courseName" column="course_name"/>
+    </resultMap>
+
+    <resultMap id="stuMap" type="Student">
+        <id property="id" column="st_id"/>
+        <result property="studentName" column="student_name"/>
+        <association property="grade" javaType="Grade" resultMap="gradeMap"></association>
+    </resultMap>
+
+    <resultMap id="scoreMap" type="Score">
+        <id property="id" column="id"/>
+        <result property="score" column="score"/>
+        <association property="student" javaType="Student" resultMap="stuMap"></association>
+        <association property="course" javaType="Course" resultMap="courseMap"></association>
+    </resultMap>
+
+
+
+    <select id="queryScoreByGradeIdAndStudentId" resultMap="scoreMap">
+        select sc.id,sc.score,st.id as st_id,st.student_name,c.id as c_id,c.course_name,g.id as g_id,g.grade_name
+        from score sc,student st,course c,grade g
+        where sc.student_id=st.id and sc.course_id=c.id and st.grade_id=g.id
+        <if test="gradeId!=null">
+            and st.grade_id=#{gradeId}
+        </if>
+        <if test="studentId!=null">
+            and st.id=#{studentId}
+        </if>
+        order by sc.id
+    </select>
+</mapper>
